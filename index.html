@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>烦恼寄存箱 · 睡前把念头倒进来</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="moon"></div>
+    <span class="star" style="top:12%;left:18%"></span>
+    <span class="star" style="top:24%;left:72%"></span>
+    <span class="star" style="top:8%;left:48%"></span>
+    <span class="star" style="top:38%;left:30%"></span>
+    <span class="star" style="top:54%;left:84%"></span>
+    <span class="star" style="top:70%;left:12%"></span>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__moon">🌙</span>
+      <span class="brand__name">烦恼寄存箱</span>
+    </div>
+    <div class="badge" id="reliability" title="承诺的可信度：明早那一条一次都不能漏">
+      已送达 0 · 漏发 0
+    </div>
+    <button class="music-toggle" id="musicToggle" aria-label="环境音乐" title="舒缓环境音乐">🎵</button>
+    <button class="gear" id="openSettings" aria-label="设置">⚙</button>
+  </header>
+
+  <main id="app">
+
+    <!-- ① 寄存屏 -->
+    <section class="screen active" id="screen-deposit">
+      <h1 class="headline">今晚，有什么在脑子里转？</h1>
+      <p class="sub">打字或说话都行。倒进来，剩下的交给我。</p>
+
+      <div class="composer">
+        <textarea id="input" class="composer__input" rows="4"
+          placeholder="比如：明天 9 点要交报告，但我怕写不完……"></textarea>
+        <div class="composer__bar">
+          <button class="mic" id="mic" title="语音输入（Chrome / Edge）">🎙 <span id="micLabel">说</span></button>
+          <span class="counter"><span id="charCount">0</span> 字</span>
+          <button class="deposit-btn" id="depositBtn">寄存 →</button>
+        </div>
+      </div>
+
+      <p class="hint" id="voiceHint">提示：语音需 Chrome / Edge，并允许麦克风权限。</p>
+
+      <div class="pending" id="pendingWrap" hidden>
+        <span id="pendingText"></span>
+        <button class="link" id="openDigest">查看明早汇总 →</button>
+      </div>
+
+      <div class="home-tools">
+        <p class="home-tools__tip">还没倒完？或者，先照顾一下自己：</p>
+        <div class="home-tools__actions">
+          <button class="ghost" id="homeCardBtn">🃏 抽一张心灵卡</button>
+          <button class="ghost med" id="homeMedBtn">🧘 10 分钟冥想</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 承诺屏 -->
+    <section class="screen" id="screen-ack">
+      <div class="ack">
+        <div class="ack__heard">
+          <span class="ack__label">我听到了</span>
+          <p class="ack__text" id="ackText"></p>
+        </div>
+        <div class="ack__cat" id="ackCat"></div>
+        <p class="ack__promise" id="ackPromise"></p>
+        <div class="ack__fix">
+          <span>分类不对？</span>
+          <button class="chip" data-cat="todo">其实是待办</button>
+          <button class="chip" data-cat="worry">其实是担忧</button>
+          <button class="chip" data-cat="thought">只是念头</button>
+        </div>
+        <div class="ack__actions">
+          <button class="ghost" id="againBtn">再倒一件</button>
+          <button class="primary" id="sleepBtn">我倒完了，去睡 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 锁箱 / 晚安屏 -->
+    <section class="screen" id="screen-night">
+      <div class="night">
+        <div class="night__box">🔒</div>
+        <h2 class="night__title">箱子已锁。</h2>
+        <p class="night__sub" id="nightSub"></p>
+        <p class="night__line">明天会有人替你记着。晚安。</p>
+        <p class="night__foot">想抽卡或冥想？点左下角「🏠 首页」回去就好。</p>
+      </div>
+    </section>
+
+    <!-- ④ 明早汇总屏 -->
+    <section class="screen" id="screen-digest">
+      <div class="digest">
+        <h2 class="digest__title">早安。</h2>
+        <p class="digest__sub" id="digestSub"></p>
+
+        <div class="group" id="groupTodo" hidden>
+          <h3 class="group__h group__h--todo"><span>●</span> 需要你行动的事</h3>
+          <ul class="list" id="listTodo"></ul>
+        </div>
+
+        <div class="group" id="groupWorry" hidden>
+          <h3 class="group__h group__h--worry"><span>☁</span> 你昨晚担心过的（无需解决，只是被看见）</h3>
+          <ul class="list" id="listWorry"></ul>
+        </div>
+
+        <div class="group" id="groupThought" hidden>
+          <h3 class="group__h group__h--thought"><span>·</span> 飘过的念头</h3>
+          <ul class="list" id="listThought"></ul>
+        </div>
+
+        <p class="digest__foot">这箱子只为帮你放下，不为给你新任务。慢慢来。</p>
+        <button class="primary" id="closeDigest">收下，清空箱子</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 设置弹窗 -->
+  <div class="modal" id="settingsModal" hidden>
+    <div class="modal__card">
+      <h3>设置</h3>
+      <label class="field">
+        明早提醒时间
+        <input type="time" id="remindTime" value="09:00" />
+      </label>
+      <label class="field">
+        语气
+        <select id="tone">
+          <option value="gentle">温柔</option>
+          <option value="plain">平实</option>
+        </select>
+      </label>
+      <hr/>
+      <p class="modal__note">演示用：立即生成"明早汇总"（无需真的等到早上）。</p>
+      <button class="ghost" id="previewDigest">⏩ 立即生成明早汇总</button>
+      <hr/>
+      <button class="ghost danger" id="resetAll">清空全部数据</button>
+      <div class="modal__actions">
+        <button class="primary" id="closeSettings">完成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 关于弹窗 -->
+  <div class="modal" id="aboutModal" hidden>
+    <div class="modal__card">
+      <h3>关于这个箱子</h3>
+      <p>让你睡不着的，往往不是"事多"，是<span class="hl">"我怕忘"</span>。</p>
+      <p>你要的不是一张清单（那是你欠的债），而是一个<span class="hl">可靠的承诺：有人替你记着</span>。</p>
+      <p>所以这里做<span class="hl">减法</span>：倒完就允许你忘。三件事分开收——</p>
+      <ul class="about-list">
+        <li><b class="c-todo">待办</b>：要行动的事，明早排进清单。</li>
+        <li><b class="c-worry">担忧</b>：不被变成任务。它本就不该被解决，只该被承认。</li>
+        <li><b class="c-thought">念头</b>：飘过就好，留着只是怕丢。</li>
+      </ul>
+      <p class="modal__note">核心技术指标不是功能多少，是<span class="hl">承诺的可信度</span>——明早那一条，一次都不能漏。</p>
+      <div class="modal__actions">
+        <button class="primary" id="closeAbout">明白了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 心灵卡牌 -->
+  <div class="overlay" id="cardOverlay" hidden>
+    <div class="card-scene">
+      <div class="card" id="soulCard">
+        <div class="card__inner">
+          <div class="card__face card__face--back"><span>🃏</span></div>
+          <div class="card__face card__face--front">
+            <div class="card__tag" id="cardTag"></div>
+            <div class="card__quote" id="cardTitle"></div>
+            <div class="card__who" id="cardWho"></div>
+            <div class="card__note" id="cardText"></div>
+            <div class="card__sign">—— 今夜寄给你的卡片</div>
+          </div>
+        </div>
+      </div>
+      <div class="card__controls">
+        <button class="ghost" id="cardAgain">再抽一张</button>
+        <button class="primary" id="cardClose">收下，去睡 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 冥想 -->
+  <div class="overlay" id="medOverlay" hidden>
+    <div class="med">
+      <div class="med__breath" id="medBreath">
+        <span class="med__cue" id="medCue">准备好了吗</span>
+      </div>
+      <div class="med__caption" id="medCaption">点下方播放，跟随 UCLA 引导，安静做一段冥想。</div>
+      <audio id="medAudio" preload="metadata"
+        src="https://d1cy5zxxhbcbkk.cloudfront.net/guided-meditations/05_Loving_Kindness_Meditation.mp3"></audio>
+      <div class="med__timer" id="medTimer">--:--</div>
+      <div class="med__controls">
+        <button class="ghost" id="medPlay">▶ 播放</button>
+        <button class="ghost" id="medRestart">↺ 重听</button>
+        <input type="range" id="medVol" min="0" max="100" value="85" title="音量" />
+      </div>
+      <p class="med__hint">引导：Diana Winston · UCLA 正念研究中心（Creative Commons 授权，可非商业使用）。播放时背景乐会为你静音，专心听引导即可。</p>
+    </div>
+  </div>
+
+  <button class="home-btn" id="homeBtn" title="返回首页">🏠 首页</button>
+  <button class="about-fab" id="openAbout" title="关于">？</button>
+
+  <script src="app.js"></script>
+</body>
+</html>

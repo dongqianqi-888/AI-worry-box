@@ -1,0 +1,255 @@
+:root{
+  --bg0:#0c0f24;
+  --bg1:#161b3a;
+  --ink:#e9eaf4;
+  --muted:#9aa0c8;
+  --card:rgba(255,255,255,.045);
+  --card-b:rgba(255,255,255,.09);
+  --moon:#f6d58c;
+  --todo:#f6c977;
+  --worry:#8fb4ff;
+  --thought:#c2a9e6;
+  --r:18px;
+  /* 文艺字体：优先系统楷体/宋体，离线最稳 */
+  --serif:'Kaiti SC','STKaiti','KaiTi','楷体','Songti SC','Noto Serif SC','Songti TC','Georgia',serif;
+  --totem:url('Hand_drawn_starry_night_sky_wi_2026-10-20T08-53-43.png');
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  color:var(--ink);
+  background:radial-gradient(120% 90% at 50% -10%,var(--bg1),var(--bg0) 70%);
+  min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* 背景星空 */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.moon{position:absolute;top:6%;right:10%;width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff7e0,var(--moon) 60%,#caa45a);
+  box-shadow:0 0 60px 12px rgba(246,213,140,.25);opacity:.9}
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.6;
+  animation:tw 4s ease-in-out infinite}
+.star:nth-child(odd){animation-duration:6s}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:.85}}
+
+/* 顶栏 */
+.topbar{position:relative;z-index:2;display:flex;align-items:center;gap:12px;
+  padding:16px 20px;max-width:640px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;letter-spacing:.5px}
+.brand__moon{font-size:20px}
+.brand__name{font-size:15px}
+.badge{margin-left:auto;font-size:11px;color:var(--muted);
+  border:1px solid var(--card-b);padding:5px 10px;border-radius:999px;background:var(--card)}
+.gear,.about-fab{background:var(--card);border:1px solid var(--card-b);color:var(--ink);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;transition:.2s}
+.gear:hover{background:rgba(255,255,255,.1)}
+
+/* 屏幕切换 */
+#app{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:8px 20px 90px}
+.screen{display:none;animation:fade .4s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* 寄存屏 */
+.headline{font-size:25px;font-weight:650;line-height:1.35;margin:18px 0 8px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.composer{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);
+  padding:14px;backdrop-filter:blur(6px)}
+.composer__input{width:100%;background:transparent;border:none;outline:none;resize:none;
+  color:var(--ink);font-size:16px;line-height:1.6;font-family:inherit}
+.composer__input::placeholder{color:#6b719b}
+.composer__bar{display:flex;align-items:center;gap:10px;margin-top:10px}
+.mic{background:rgba(143,180,255,.12);border:1px solid rgba(143,180,255,.3);color:var(--worry);
+  border-radius:999px;padding:7px 14px;cursor:pointer;font-size:13px;transition:.2s}
+.mic.listening{background:rgba(143,180,255,.28);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(143,180,255,.4)}50%{box-shadow:0 0 0 6px rgba(143,180,255,0)}}
+.counter{color:var(--muted);font-size:12px;margin-left:auto}
+.deposit-btn{background:var(--moon);color:#2a2208;border:none;border-radius:999px;
+  padding:10px 22px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s}
+.deposit-btn:hover{filter:brightness(1.06)}
+.deposit-btn:disabled{opacity:.4;cursor:not-allowed}
+.hint{color:#6b719b;font-size:12px;margin-top:12px}
+.pending{margin-top:18px;background:var(--card);border:1px solid var(--card-b);
+  border-radius:14px;padding:12px 14px;font-size:13px;color:var(--muted);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.link{background:none;border:none;color:var(--moon);cursor:pointer;font-size:13px;margin-left:auto}
+
+/* 承诺屏 */
+.ack{background:var(--card);border:1px solid var(--card-b);border-radius:var(--r);
+  padding:22px;margin-top:24px;backdrop-filter:blur(6px)}
+.ack__label{font-size:12px;color:var(--muted)}
+.ack__text{font-size:17px;line-height:1.6;margin:6px 0 16px}
+.ack__cat{display:inline-block;font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.cat-todo{background:rgba(246,201,119,.15);color:var(--todo);border:1px solid rgba(246,201,119,.35)}
+.cat-worry{background:rgba(143,180,255,.15);color:var(--worry);border:1px solid rgba(143,180,255,.35)}
+.cat-thought{background:rgba(194,169,230,.15);color:var(--thought);border:1px solid rgba(194,169,230,.35)}
+.ack__promise{font-size:16px;line-height:1.7;color:#dfe2f5}
+.ack__fix{margin:18px 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--card-b);color:var(--ink);border-radius:999px;
+  padding:5px 12px;font-size:12px;cursor:pointer}
+.chip:hover{background:rgba(255,255,255,.1)}
+.ack__actions{display:flex;gap:10px;margin-top:8px}
+.ghost{background:var(--card);border:1px solid var(--card-b);color:var(--ink);
+  border-radius:999px;padding:11px 18px;font-size:14px;cursor:pointer;transition:.2s}
+.ghost:hover{background:rgba(255,255,255,.08)}
+.primary{background:var(--moon);color:#2a2208;border:none;border-radius:999px;
+  padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;margin-left:auto}
+.primary:hover{filter:brightness(1.06)}
+
+/* 晚安屏 */
+.night{text-align:center;margin-top:14vh;animation:fade .5s ease}
+.night__box{font-size:54px;margin-bottom:14px;filter:drop-shadow(0 0 22px rgba(246,213,140,.35))}
+.night__foot{color:var(--muted);font-size:13px;margin-top:18px;line-height:1.6}
+.night__title{font-size:24px;font-weight:650;margin-bottom:8px}
+.night__sub{color:var(--muted);font-size:15px;margin-bottom:18px}
+.night__line{color:#c9cdf0;font-size:16px;margin-bottom:26px;line-height:1.6}
+
+/* 点击箱子弹出的入口 */
+.night__menu{margin:6px auto 0;max-width:340px;background:rgba(255,255,255,.05);
+  border:1px solid var(--card-b);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;
+  animation:fade .3s ease}
+.night__menu[hidden]{display:none}
+.night__menu-hint{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:2px}
+.night__menu-btn{background:rgba(143,180,255,.13);border:1px solid rgba(143,180,255,.32);color:var(--worry);
+  border-radius:999px;padding:12px 18px;font-size:14px;cursor:pointer;transition:.2s;font-family:var(--serif)}
+.night__menu-btn:hover{background:rgba(143,180,255,.24)}
+.night__menu-close{background:none;border:none;color:var(--muted);font-size:12.5px;cursor:pointer;margin-top:2px}
+.night__menu-close:hover{color:var(--ink)}
+
+/* 汇总屏 */
+.digest{margin-top:18px;animation:fade .4s ease}
+.digest__title{font-size:24px;font-weight:650}
+.digest__sub{color:var(--muted);font-size:14px;margin:8px 0 22px;line-height:1.6}
+.group{margin-bottom:22px}
+.group__h{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.group__h span{font-size:13px}
+.group__h--todo{color:var(--todo)}
+.group__h--worry{color:var(--worry)}
+.group__h--thought{color:var(--thought)}
+.list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.list li{background:var(--card);border:1px solid var(--card-b);border-radius:12px;
+  padding:12px 14px;font-size:15px;line-height:1.55;display:flex;gap:10px;align-items:flex-start}
+.list li .tag{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px}
+.digest__foot{color:var(--muted);font-size:13px;line-height:1.6;margin:18px 0;
+  border-left:2px solid rgba(255,255,255,.15);padding-left:12px}
+
+/* 弹窗 */
+.modal{position:fixed;inset:0;z-index:10;background:rgba(6,8,20,.7);
+  display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+.modal[hidden]{display:none}
+.modal__card{background:var(--bg1);border:1px solid var(--card-b);border-radius:20px;
+  padding:24px;max-width:420px;width:100%;max-height:86dvh;overflow:auto}
+.modal__card h3{font-size:18px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--muted);margin-bottom:14px}
+.field input,.field select{background:var(--card);border:1px solid var(--card-b);color:var(--ink);
+  border-radius:10px;padding:10px;font-size:15px;font-family:inherit}
+.modal__card hr{border:none;border-top:1px solid var(--card-b);margin:16px 0}
+.modal__note{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.modal__actions{display:flex;justify-content:flex-end;margin-top:16px}
+.modal__card p{font-size:14px;line-height:1.7;margin-bottom:10px}
+.hl{color:var(--moon)}
+.about-list{list-style:none;font-size:14px;line-height:1.7;margin:6px 0 10px;padding-left:2px}
+.about-list li{margin-bottom:6px}
+.c-todo{color:var(--todo)} .c-worry{color:var(--worry)} .c-thought{color:var(--thought)}
+.danger{color:#ff8a8a;border-color:rgba(255,138,138,.4)}
+
+/* 关于悬浮按钮 */
+.about-fab{position:fixed;right:16px;bottom:18px;z-index:5;font-size:15px;font-weight:700}
+.about-fab:hover{background:rgba(255,255,255,.1)}
+
+/* 返回首页：每个页面常驻，浮于浮层之上 */
+.home-btn{position:fixed;left:16px;bottom:18px;z-index:30;background:var(--card);
+  border:1px solid var(--card-b);color:var(--ink);border-radius:999px;padding:9px 16px;
+  font-size:13px;cursor:pointer;transition:.2s;backdrop-filter:blur(6px)}
+.home-btn:hover{background:rgba(255,255,255,.12)}
+
+/* 首页工具区（抽卡 / 冥想入口） */
+.home-tools{margin-top:22px;background:rgba(143,180,255,.05);border:1px solid rgba(143,180,255,.18);
+  border-radius:14px;padding:14px}
+.home-tools__tip{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.home-tools__actions{display:flex;gap:10px;flex-wrap:wrap}
+.home-tools__actions .ghost{padding:9px 16px;font-size:13px}
+.home-tools__actions .med{background:rgba(143,180,255,.12);border-color:rgba(143,180,255,.3);color:var(--worry)}
+
+@media (max-width:480px){
+  .headline{font-size:22px}
+  .ack__actions,.composer__bar{flex-wrap:wrap}
+  .primary{margin-left:0}
+}
+
+/* 环境音乐开关 */
+.music-toggle{background:var(--card);border:1px solid var(--card-b);color:var(--ink);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;transition:.2s;position:relative}
+.music-toggle:hover{background:rgba(255,255,255,.1)}
+.music-toggle.on{background:rgba(246,213,140,.18);border-color:rgba(246,213,140,.4)}
+.music-toggle.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid rgba(246,213,140,.5);animation:pulse 1.6s infinite}
+
+/* 接住自己区 */
+.comfort{margin:18px 0 4px;background:rgba(143,180,255,.06);
+  border:1px solid rgba(143,180,255,.18);border-radius:14px;padding:14px}
+.comfort__tip{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.comfort__actions{display:flex;gap:10px;flex-wrap:wrap}
+.comfort__actions .ghost{padding:9px 16px;font-size:13px}
+.comfort__actions .med{background:rgba(143,180,255,.12);border-color:rgba(143,180,255,.3);color:var(--worry)}
+.comfort__actions .med-strong{background:rgba(143,180,255,.22);border-color:rgba(143,180,255,.55);
+  box-shadow:0 0 18px rgba(143,180,255,.25);font-weight:600}
+
+/* 全屏浮层（卡牌 / 冥想）：手绘星空图腾背景 */
+.overlay{position:fixed;inset:0;z-index:20;
+  background:linear-gradient(rgba(6,8,20,.72),rgba(6,8,20,.85)),var(--totem) center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);animation:fade .35s ease}
+.overlay[hidden]{display:none}
+
+/* 心灵卡牌 */
+.card-scene{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%;max-width:380px}
+.card{perspective:1000px;width:100%;height:380px;cursor:pointer}
+.card__inner{position:relative;width:100%;height:100%;transition:transform .8s cubic-bezier(.2,.7,.2,1);
+  transform-style:preserve-3d}
+.card.is-flipped .card__inner{transform:rotateY(180deg)}
+.card__face{position:absolute;inset:0;backface-visibility:hidden;border-radius:22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
+.card__face--back{background:linear-gradient(160deg,#2a3170,#161b3a);
+  border:1px solid rgba(143,180,255,.3);font-size:48px;color:var(--worry);
+  box-shadow:0 0 50px rgba(143,180,255,.18)}
+.card__face--front{
+  background:linear-gradient(rgba(10,12,30,.62),rgba(10,12,30,.78)),var(--totem) center/cover no-repeat,
+             linear-gradient(160deg,#232a55,#15193a);
+  background-blend-mode:normal;
+  border:1px solid rgba(246,213,140,.4);transform:rotateY(180deg);
+  box-shadow:0 0 60px rgba(246,213,140,.2);
+  align-items:flex-start;text-align:left;
+  font-family:var(--serif)}
+.card__tag{display:inline-block;align-self:flex-start;font-size:11px;letter-spacing:2px;
+  padding:3px 12px;border-radius:999px;border:1px solid var(--card-b);color:var(--muted);margin-bottom:12px;
+  font-family:var(--serif)}
+.card__quote{font-size:17px;font-weight:600;line-height:1.95;color:#f3f4fc;text-align:left;
+  margin-bottom:12px;position:relative;padding-left:14px;border-left:2px solid var(--moon);font-family:var(--serif)}
+.card__who{font-size:12.5px;color:var(--moon);margin-bottom:12px;text-align:left;opacity:.92;font-family:var(--serif)}
+.card__note{font-size:13.5px;line-height:1.75;color:#c2c6e6;text-align:left;
+  background:rgba(255,255,255,.05);border-radius:10px;padding:10px 12px;font-family:var(--serif)}
+.card__sign{margin-top:16px;font-size:12px;color:var(--muted);text-align:left;font-family:var(--serif)}
+.card__controls{display:flex;gap:12px;width:100%;max-width:380px}
+.card__controls .primary{margin-left:auto}
+
+/* 冥想 */
+.med{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:420px;text-align:center}
+.med__breath{width:170px;height:170px;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,rgba(143,180,255,.35),rgba(143,180,255,.06) 70%);
+  border:1px solid rgba(143,180,255,.35);
+  display:flex;align-items:center;justify-content:center;
+  animation:breathe 9s ease-in-out infinite;box-shadow:0 0 50px rgba(143,180,255,.15)}
+.med__breath.paused{animation-play-state:paused}
+@keyframes breathe{0%,100%{transform:scale(.78);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+.med__cue{font-size:15px;color:#dbe2ff;letter-spacing:3px}
+.med__caption{font-size:15px;line-height:1.7;color:#dfe3f5;min-height:44px;max-width:340px}
+.med__timer{font-size:30px;font-weight:600;color:var(--moon);letter-spacing:1px;font-variant-numeric:tabular-nums}
+.med__controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.med__controls .sample{background:rgba(246,213,140,.14);border-color:rgba(246,213,140,.4);color:var(--moon)}
+.med__controls .ghost{padding:9px 16px;font-size:13px}
+.med__controls input[type=range]{accent-color:var(--worry);width:120px}
+.med__hint{font-size:12px;color:#7a80a8;line-height:1.6;max-width:320px}
+.night-med{margin-bottom:14px;background:rgba(143,180,255,.12);border-color:rgba(143,180,255,.3);color:var(--worry)}
